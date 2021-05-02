@@ -1,0 +1,34 @@
+const { src, dest } = require("gulp");
+const sass = require("gulp-sass");
+const cleanCSS = require("gulp-clean-css");
+const autoprefixer = require("gulp-autoprefixer");
+const concat = require("gulp-concat");
+const browserSync = require("browser-sync");
+
+const style = (cb) => {
+  src("./src/scss/*.scss")
+    // .pipe(
+    //   sass({
+    //     includePaths: require("node-normalize-scss").includePaths,
+    //   }).on("error", sass.logError)
+    // )
+
+    .pipe(sass().on("error", sass.logError))
+
+    .pipe(concat("styles.min.css"))
+    .pipe(
+      autoprefixer({
+        cascade: false,
+      })
+    )
+    .pipe(cleanCSS({ compatibility: "ie8" }))
+    .pipe(dest("./dist/css"))
+    .pipe(
+      browserSync.reload({
+        stream: true,
+      })
+    );
+  cb();
+};
+
+exports.style = style;
